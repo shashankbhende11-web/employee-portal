@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CloudESS — Employee Self-Service Portal</title>
+  <meta name="description"
+    content="Cloud Employee Self-Service Portal — register, log attendance clock-ins, and request leaves from one seamless user interface.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://img.icons8.com/color/48/cloud-storage.png">
+
+  <!-- Google Fonts — Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <!-- Custom Styling -->
+  <link href="css/styles.css" rel="stylesheet">
+
+  <!-- Theme Pre-initialization -->
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+  </script>
+</head>
+
+<body>
+
+  <div id="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar-wrapper">
+      <div class="sidebar-brand">
+        <div class="logo-icon">
+          <i class="bi bi-person-workspace"></i>
+        </div>
+        <span class="brand-name">CloudESS</span>
+      </div>
+
+      <div class="sidebar-menu">
+        <div class="menu-header">Core</div>
+        <a href="#/dashboard" class="nav-menu-item active" id="nav-dashboard">
+          <i class="bi bi-grid-1x2-fill"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <div class="menu-header">Self Service</div>
+        <a href="#/register" class="nav-menu-item" id="nav-register">
+          <i class="bi bi-person-plus-fill"></i>
+          <span>Registration</span>
+        </a>
+        <a href="#/attendance" class="nav-menu-item" id="nav-attendance">
+          <i class="bi bi-clock-fill"></i>
+          <span>Clock In / Out</span>
+        </a>
+        <a href="#/leaves" class="nav-menu-item" id="nav-leaves">
+          <i class="bi bi-calendar-range-fill"></i>
+          <span>Leave Request</span>
+        </a>
+      </div>
+
+
+    </aside>
+
+    <!-- Mobile Sidebar Backdrop -->
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+    <!-- MAIN WRAPPER -->
+    <main class="main-wrapper">
+
+      <!-- TOP NAVBAR -->
+      <header class="top-navbar">
+        <div class="d-flex align-items-center">
+          <button id="mobile-toggle" class="mobile-nav-toggle" aria-label="Toggle Sidebar">
+            <i class="bi bi-list fs-3"></i>
+          </button>
+
+          <div class="d-none d-md-flex align-items-center gap-2">
+            <span
+              style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:9999px;background:linear-gradient(135deg,rgba(37,99,235,0.08),rgba(6,182,212,0.08));border:1px solid rgba(37,99,235,0.15);font-size:0.78rem;font-weight:600;color:#2563eb;">
+              <i class="bi bi-shield-check"></i> Cloud ESS Portal
+            </span>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+          <!-- Theme Toggle Button -->
+          <button class="navbar-action-btn" type="button" id="theme-toggle-btn" aria-label="Toggle Theme">
+            <i class="bi bi-moon-fill" id="theme-toggle-icon"></i>
+          </button>
+
+          <!-- Notifications Quick Menu -->
+          <div class="dropdown">
+            <button class="navbar-action-btn" type="button" id="notificationDropdown" data-bs-toggle="dropdown"
+              aria-expanded="false" aria-label="Notifications">
+              <i class="bi bi-bell"></i>
+              <span class="btn-badge d-none" id="notification-badge"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3 mt-2 p-0 overflow-hidden"
+              aria-labelledby="notificationDropdown" style="width: 290px;">
+              <li class="px-3 py-2 bg-light border-bottom d-flex justify-content-between align-items-center">
+                <span class="fw-bold fs-7">Recent Activities</span>
+                <span class="badge bg-primary rounded-pill" style="font-size: 0.7rem;" id="notification-count">0</span>
+              </li>
+              <div id="notification-list" style="max-height: 250px; overflow-y: auto;">
+                <!-- JS Populated -->
+              </div>
+              <li class="border-top text-center py-2 bg-light">
+                <a href="#/dashboard" class="text-decoration-none text-primary small fw-semibold fs-7">View all
+                  activity</a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- User Quick Menu -->
+          <div class="dropdown">
+            <button class="btn p-0 border-0 d-flex align-items-center gap-2" type="button" id="userDropdown"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              <span class="fw-semibold text-secondary fs-7">Self-Service</span>
+              <i class="bi bi-chevron-down text-muted fs-8"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3 mt-2"
+              aria-labelledby="userDropdown">
+              <li class="px-3 py-2 border-bottom">
+                <div class="fw-bold">Employee Portal</div>
+              </li>
+              <li><a class="dropdown-item mt-1" href="#/register"><i class="bi bi-person me-2"></i>Register Profile</a>
+              </li>
+              <li><a class="dropdown-item" href="#/attendance"><i class="bi bi-clock me-2"></i>Clock Console</a></li>
+              <li><a class="dropdown-item" href="#/leaves"><i class="bi bi-calendar-range me-2"></i>Request Leave</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONTENT CONTAINER -->
+      <div class="content-container">
+
+        <!-- ========================================== -->
+        <!-- DASHBOARD VIEW -->
+        <!-- ========================================== -->
+        <section id="dashboard-view" class="app-view active">
+          <div class="row align-items-center mb-4">
+            <div class="col">
+              <h1 class="page-title">Employee Portal Dashboard</h1>
+            </div>
+          </div>
+
+          <!-- Analytics Metric Cards -->
+          <div class="row g-4 mb-4">
+            <!-- Metric 1 -->
+            <div class="col-12 col-sm-6 col-xl-3">
+              <div class="custom-card analytics-card primary">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span class="text-secondary fw-semibold">Staff Directory</span>
+                  <div class="analytics-icon-box primary">
+                    <i class="bi bi-people-fill"></i>
+                  </div>
+                </div>
+                <div class="analytics-value mb-2" id="stat-total-employees">0</div>
+                <span class="analytics-trend text-secondary">Registered profiles</span>
+              </div>
+            </div>
+            <!-- Metric 2 -->
+            <div class="col-12 col-sm-6 col-xl-3">
+              <div class="custom-card analytics-card success">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span class="text-secondary fw-semibold">Clocked In Today</span>
+                  <div class="analytics-icon-box success">
+                    <i class="bi bi-person-check-fill"></i>
+                  </div>
+                </div>
+                <div class="analytics-value mb-2" id="stat-clocked-in">0</div>
+                <span class="analytics-trend text-secondary" id="stat-attendance-rate">Attendance logged</span>
+              </div>
+            </div>
+            <!-- Metric 3 -->
+            <div class="col-12 col-sm-6 col-xl-3">
+              <div class="custom-card analytics-card warning">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span class="text-secondary fw-semibold">Leaves Logged</span>
+                  <div class="analytics-icon-box warning">
+                    <i class="bi bi-calendar-range-fill"></i>
+                  </div>
+                </div>
+                <div class="analytics-value mb-2" id="stat-on-leave">0</div>
+                <span class="analytics-trend text-secondary">Requests registered</span>
+              </div>
+            </div>
+            <!-- Metric 4 -->
+            <div class="col-12 col-sm-6 col-xl-3">
+              <div class="custom-card analytics-card info">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span class="text-secondary fw-semibold">Pending Approvals</span>
+                  <div class="analytics-icon-box info">
+                    <i class="bi bi-hourglass-split"></i>
+                  </div>
+                </div>
+                <div class="analytics-value mb-2" id="stat-pending-leaves">0</div>
+                <span class="analytics-trend text-secondary">Awaiting response</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Shortcuts & Recent Actions -->
+          <div class="row g-4 mb-4">
+            <div class="col-12 col-lg-7">
+              <div class="custom-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h5 class="fw-bold mb-1">Quick Self-Service Actions</h5>
+                </div>
+                <div class="row g-3 py-2">
+                  <div class="col-12 col-sm-4">
+                    <a href="#/register" class="btn btn-outline-primary w-100 text-center py-3">
+                      <i class="bi bi-person-plus fs-3 d-block mb-2"></i> Register Profile
+                    </a>
+                  </div>
+                  <div class="col-12 col-sm-4">
+                    <a href="#/attendance" class="btn btn-outline-primary w-100 text-center py-3">
+                      <i class="bi bi-clock fs-3 d-block mb-2"></i> Clock Console
+                    </a>
+                  </div>
+                  <div class="col-12 col-sm-4">
+                    <a href="#/leaves" class="btn btn-outline-primary w-100 text-center py-3">
+                      <i class="bi bi-calendar-check fs-3 d-block mb-2"></i> Leave Request
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Activity Feed -->
+            <div class="col-12 col-lg-5">
+              <div class="custom-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <div>
+                    <h5 class="fw-bold mb-1">Recent Activity Feed</h5>
+                    <p class="text-muted small mb-0">Live portal activities</p>
+                  </div>
+                </div>
+                <div class="activity-list" id="dashboard-activity-feed">
+                  <!-- JS Populated -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ========================================== -->
+        <!-- EMPLOYEE REGISTRATION VIEW -->
+        <!-- ========================================== -->
+        <section id="register-view" class="app-view">
+          <div class="row align-items-center mb-4">
+            <div class="col">
+              <h1 class="page-title">Employee Registration</h1>
+            </div>
+          </div>
+
+          <div class="row g-4">
+            <!-- Registration Form Card -->
+            <div class="col-12 col-lg-5">
+              <div class="custom-card">
+                <h5 class="fw-bold mb-3 border-bottom pb-2">
+                  <i class="bi bi-card-heading text-primary me-2"></i> Registration Form
+                </h5>
+                <form id="employeeRegisterForm">
+                  <div class="row g-3">
+                    <div class="col-12">
+                      <label for="reg-name" class="form-label fw-semibold text-secondary small">Full Name</label>
+                      <input type="text" class="form-control" id="reg-name" required placeholder="e.g., Jane Doe">
+                    </div>
+                    <div class="col-12">
+                      <label for="reg-email" class="form-label fw-semibold text-secondary small">Email Address</label>
+                      <input type="email" class="form-control" id="reg-email" required
+                        placeholder="e.g., jane.doe@company.com">
+                    </div>
+                    <div class="col-12">
+                      <label for="reg-phone" class="form-label fw-semibold text-secondary small">Phone Number</label>
+                      <input type="tel" class="form-control" id="reg-phone" required
+                        placeholder="e.g., +91 98765 43210">
+                    </div>
+                    <div class="col-12">
+                      <label for="reg-department" class="form-label fw-semibold text-secondary small">Department</label>
+                      <select class="form-select" id="reg-department" required>
+                        <option value="" disabled selected>Select Department</option>
+                        <option value="IT">IT</option>
+                        <option value="HR">HR</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Operations">Operations</option>
+                        <option value="Sales">Sales</option>
+                        <option value="Support">Support</option>
+                        <option value="Administration">Administration</option>
+                      </select>
+                    </div>
+                    <div class="col-12">
+                      <label for="reg-role" class="form-label fw-semibold text-secondary small">Job Role</label>
+                      <input type="text" class="form-control" id="reg-role" required placeholder="e.g., UX/UI Designer">
+                    </div>
+                    <div class="col-12">
+                      <label for="reg-preview-id" class="form-label fw-semibold text-secondary small">Auto-generated
+                        Employee ID</label>
+                      <input type="text" class="form-control" id="reg-preview-id" readonly
+                        placeholder="Will be EMP_xxx">
+                      <div class="form-text text-muted small">Generated automatically based on the next available ID
+                        sequence.</div>
+                    </div>
+                    <div class="col-12 pt-2">
+                      <button type="submit" class="btn btn-primary-custom w-100 py-2">
+                        <i class="bi bi-check-circle me-2"></i> Register Profile
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Employee Directory Card -->
+            <div class="col-12 col-lg-7">
+              <div class="custom-card p-0 overflow-hidden">
+                <div
+                  class="p-3 border-bottom d-flex flex-column flex-md-row gap-3 justify-content-between align-items-md-center bg-light">
+                  <h6 class="fw-bold mb-0 text-main"><i class="bi bi-journal-text text-primary me-2"></i> Registered
+                    Directory</h6>
+                  <div class="search-input-group w-100 w-md-auto">
+                    <i class="bi bi-search"></i>
+                    <input type="text" id="employee-search" class="form-control" placeholder="Search directory...">
+                  </div>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="table custom-table align-middle">
+                    <thead>
+                      <tr>
+                        <th>Emp ID</th>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Job Role</th>
+                      </tr>
+                    </thead>
+                    <tbody id="employee-table-body">
+                      <!-- JS Populated -->
+                    </tbody>
+                  </table>
+                </div>
+                <div class="p-3 bg-light border-top text-center">
+                  <span class="text-secondary small" id="employee-directory-count">Total: 0 employees</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ========================================== -->
+        <!-- ATTENDANCE VIEW -->
+        <!-- ========================================== -->
+        <section id="attendance-view" class="app-view">
+          <div class="row align-items-center mb-4">
+            <div class="col">
+              <h1 class="page-title">Daily Attendance tracking</h1>
+            </div>
+          </div>
+
+          <div class="row g-4">
+            <!-- Clocking Console Card -->
+            <div class="col-12 col-lg-5">
+              <div class="custom-card">
+                <h5 class="fw-bold mb-3 border-bottom pb-2">
+                  <i class="bi bi-cpu text-primary me-2"></i> Clocking Console
+                </h5>
+
+                <!-- Real-time digital clock -->
+                <div class="text-center py-4 my-2 rounded bg-light border border-dashed">
+                  <div class="text-secondary text-uppercase fw-bold fs-8 tracking-wider mb-1" id="clock-date">June 4,
+                    2026</div>
+                  <div class="fw-extrabold fs-2 font-monospace text-primary" id="clock-time">00:00:00</div>
+                  <div class="text-muted small mt-1"><i class="bi bi-clock-history"></i> Automatic Server Timestamp
+                  </div>
+                </div>
+
+                <form id="attendanceClockForm">
+                  <div class="row g-3">
+                    <div class="col-12">
+                      <label for="att-employee-select" class="form-label fw-semibold text-secondary small">Select
+                        Employee Profile</label>
+                      <select class="form-select" id="att-employee-select" required>
+                        <option value="" disabled selected>Select Employee</option>
+                        <!-- JS Populated -->
+                      </select>
+                    </div>
+                    <div class="col-12">
+                      <label for="att-employee-id" class="form-label fw-semibold text-secondary small">Employee ID
+                        (Autofill)</label>
+                      <input type="text" class="form-control" id="att-employee-id" readonly
+                        placeholder="Select name above...">
+                    </div>
+
+                    <!-- Clock Status Alert -->
+                    <div class="col-12 d-none" id="attendance-status-alert">
+                      <div class="alert d-flex align-items-center mb-0" role="alert">
+                        <i class="bi fs-5 me-2" id="attendance-alert-icon"></i>
+                        <div id="attendance-alert-text">Clocking state message</div>
+                      </div>
+                    </div>
+
+                    <!-- Clock Actions Buttons Row -->
+                    <div class="col-12 d-flex gap-3 pt-2 justify-content-center">
+                      <button type="button" id="btn-clock-in" class="kiosk-btn kiosk-btn-in flex-grow-1" disabled>
+                        <i class="bi bi-box-arrow-in-right"></i> Clock In
+                      </button>
+                      <button type="button" id="btn-clock-out" class="kiosk-btn kiosk-btn-out flex-grow-1" disabled>
+                        <i class="bi bi-box-arrow-left"></i> Clock Out
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Attendance Logs Table Card -->
+            <div class="col-12 col-lg-7">
+              <div class="custom-card p-0 overflow-hidden">
+                <div
+                  class="p-3 border-bottom d-flex flex-column flex-md-row gap-3 justify-content-between align-items-md-center bg-light">
+                  <h6 class="fw-bold mb-0 text-main"><i class="bi bi-calendar-check text-primary me-2"></i> Attendance
+                    Log History</h6>
+                  <div class="d-flex gap-2">
+                    <input type="date" id="filter-attendance-date" class="form-control bg-white"
+                      style="max-width: 160px;" aria-label="Filter Date">
+                    <select id="filter-attendance-status" class="form-select bg-white" style="max-width: 140px;"
+                      aria-label="Filter Status">
+                      <option value="">All Statuses</option>
+                      <option value="Present">Present</option>
+                      <option value="Late">Late</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="table custom-table align-middle">
+                    <thead>
+                      <tr>
+                        <th>Employee</th>
+                        <th>Date</th>
+                        <th>Clock In</th>
+                        <th>Clock Out</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="attendance-table-body">
+                      <!-- JS Populated -->
+                    </tbody>
+                  </table>
+                </div>
+                <div class="p-3 bg-light border-top text-center">
+                  <span class="text-secondary small" id="attendance-log-count">Total: 0 logs</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ========================================== -->
+        <!-- LEAVE REQUEST VIEW -->
+        <!-- ========================================== -->
+        <section id="leaves-view" class="app-view">
+          <div class="row align-items-center mb-4">
+            <div class="col">
+              <h1 class="page-title">Leave Request Management</h1>
+            </div>
+          </div>
+
+          <div class="row g-4">
+            <!-- Leave Submission Form Card -->
+            <div class="col-12 col-lg-5">
+              <div class="custom-card">
+                <h5 class="fw-bold mb-3 border-bottom pb-2">
+                  <i class="bi bi-file-earmark-diff text-primary me-2"></i> Apply for Leave
+                </h5>
+                <form id="leaveRequestForm">
+                  <div class="row g-3">
+                    <div class="col-12">
+                      <label for="leave-employee-select" class="form-label fw-semibold text-secondary small">Select
+                        Employee Profile</label>
+                      <select class="form-select" id="leave-employee-select" required>
+                        <option value="" disabled selected>Select Employee</option>
+                        <!-- JS Populated -->
+                      </select>
+                    </div>
+                    <div class="col-12">
+                      <label for="leave-employee-id" class="form-label fw-semibold text-secondary small">Employee ID
+                        (Autofill)</label>
+                      <input type="text" class="form-control" id="leave-employee-id" readonly
+                        placeholder="Select name above...">
+                    </div>
+                    <div class="col-12">
+                      <label for="leave-type" class="form-label fw-semibold text-secondary small">Leave Type</label>
+                      <select class="form-select" id="leave-type" required>
+                        <option value="" disabled selected>Select Type</option>
+                        <option value="Sick Leave">Sick Leave</option>
+                        <option value="Casual Leave">Casual Leave</option>
+                        <option value="Annual Leave">Annual Leave</option>
+                        <option value="Maternity Leave">Maternity Leave</option>
+                      </select>
+                    </div>
+                    <div class="col-6">
+                      <label for="leave-start-date" class="form-label fw-semibold text-secondary small">Start
+                        Date</label>
+                      <input type="date" class="form-control" id="leave-start-date" required>
+                    </div>
+                    <div class="col-6">
+                      <label for="leave-end-date" class="form-label fw-semibold text-secondary small">End Date</label>
+                      <input type="date" class="form-control" id="leave-end-date" required>
+                    </div>
+                    <div class="col-12">
+                      <label for="leave-reason" class="form-label fw-semibold text-secondary small">Reason for
+                        Leave</label>
+                      <textarea class="form-control" id="leave-reason" rows="3" required
+                        placeholder="Describe the reason for leave request..."></textarea>
+                    </div>
+                    <div class="col-12 pt-2">
+                      <button type="submit" class="btn btn-primary-custom w-100 py-2">
+                        <i class="bi bi-file-earmark-plus me-2"></i> Submit Leave Request
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Leave Request History Table Card -->
+            <div class="col-12 col-lg-7">
+              <div class="custom-card p-0 overflow-hidden">
+                <div
+                  class="p-3 border-bottom d-flex flex-column flex-md-row gap-3 justify-content-between align-items-md-center bg-light">
+                  <h6 class="fw-bold mb-0 text-main"><i class="bi bi-calendar-range text-primary me-2"></i> Leave
+                    Request History</h6>
+                  <select id="filter-leave-status" class="form-select bg-white" style="max-width: 150px;"
+                    aria-label="Filter Leave Status">
+                    <option value="">All Statuses</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
+                  </select>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="table custom-table align-middle">
+                    <thead>
+                      <tr>
+                        <th>Req ID</th>
+                        <th>Employee</th>
+                        <th>Type</th>
+                        <th>Dates</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="leave-table-body">
+                      <!-- JS Populated -->
+                    </tbody>
+                  </table>
+                </div>
+                <div class="p-3 bg-light border-top text-center">
+                  <span class="text-secondary small" id="leave-log-count">Total: 0 leave requests</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- JS Scripts -->
+  <!-- Bootstrap 5 Bundle with Popper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="js/api.js"></script>
+
+  <script src="js/app.js"></script>
+</body>
+
+</html>

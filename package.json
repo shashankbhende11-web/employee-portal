@@ -1,0 +1,20 @@
+{
+  "name": "cloud-employee-self-service-portal",
+  "version": "1.0.0",
+  "description": "Cloud Employee Self-Service Portal Frontend",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx -y serve ."
+  },
+  "keywords": [
+    "employee",
+    "portal",
+    "self-service",
+    "kiosk",
+    "attendance",
+    "leave",
+    "bootstrap"
+  ],
+  "author": "",
+  "license": "ISC"
+}
